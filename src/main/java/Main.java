@@ -43,7 +43,7 @@ public class Main {
         buildMinimaTables();
         buildSparseTables();
         computeAllAnswers();
-        System.out.println(answerQuery(0,2));
+        //System.out.println(answerQuery(0,2));
     }
     private static void buildTree(){
         /**
@@ -136,7 +136,7 @@ public class Main {
                 blockMinimum--;
                 superBlockMinimum--;
                 if (blockMinimum<0){
-                    blocksMinima[i/superblockSize][(i/blockSize)%superblockSize]=i;
+                    blocksMinima[i/superblockSize][(i/blockSize)%(superblockSize/blockSize)]=i;
                     blockMinimum=0;
                 }
                 if (superBlockMinimum<0){
@@ -145,7 +145,7 @@ public class Main {
                 }
             }
             if (i%blockSize==0){
-                blocksMinima[i/superblockSize][(i/blockSize)%superblockSize]=i;
+                blocksMinima[i/superblockSize][(i/blockSize)%(superblockSize/blockSize)]=i;
                 blockMinimum=0;
                 if (i%superblockSize==0){
                     superBlocksMinima[i/superblockSize]=i;
@@ -186,7 +186,7 @@ public class Main {
         }
         blockSparseTable = new int[superBlocksMinima.length][][];
         for (int i=0; i<blockSparseTable.length;i++){
-            blockSparseTable[i]=new int[(int)(Math.log(blocksMinima[i].length)/Math.log(2.0))][];
+            blockSparseTable[i]=new int[(int)(Math.log(blocksMinima[i].length)/Math.log(2.0))+1][];
             blockSparseTable[i][0]=blocksMinima[i];
             for (int j=1;j<blockSparseTable[i].length;j++){
                 blockSparseTable[i][j]=new int[blocksMinima[i].length-(int)Math.pow(2,j)+1];
@@ -242,7 +242,7 @@ public class Main {
         }
         return;
     }
-    private static int answerQuery(int i, int j){
+    public static int answerQuery(int i, int j){
         /**
          * As we reduced the RMQ problem to ±1RMQ, we have to change i and j to appropriate
          * indices of B table using R array.
