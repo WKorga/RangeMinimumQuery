@@ -119,7 +119,7 @@ public class Main {
          * Operation is performed with a single for loop so the time complexity is linear
          * Tables occupy O( n/log^3 n + n/log n) = o(n) space
          */
-        blockSize = (int)(0.5*Math.log(T.size())/Math.log(2.0));
+        blockSize = Math.max((int)(0.5*Math.log(T.size())/Math.log(2.0)),1);
         superblockSize = (int)Math.pow((blockSize*2),3);
         superBlocksMinima = new int[(int) Math.ceil(T.size()/(double)superblockSize)];
         blocksMinima = new int[superBlocksMinima.length][superblockSize/blockSize];
@@ -171,7 +171,7 @@ public class Main {
          * Which the method uses for both minima tables creating two sparse tables: superBlockSparseTable and blockSparseTable
          * that will be later used for answering RMQ queries
          */
-        superBlockSparseTable = new int[(int)(Math.log(superBlocksMinima.length)/Math.log(2.0))][];
+        superBlockSparseTable = new int[(int)Math.ceil((Math.log(superBlocksMinima.length)/Math.log(2.0)))][];
         for (int i=0; i<superBlockSparseTable.length;i++){
             if (i==0){
                 superBlockSparseTable[0]=superBlocksMinima;
@@ -327,10 +327,14 @@ public class Main {
             return superBlocksMinima[left];
         }else {
             int k = (int)(Math.log(right-left+1)/Math.log(2.0));
-            return getMinimum(
-                    superBlockSparseTable[k][left],
-                    superBlockSparseTable[k][right-(int)Math.pow(2,k)+1]
-            );
+            try{
+                return getMinimum(
+                        superBlockSparseTable[k][left],
+                        superBlockSparseTable[k][right-(int)Math.pow(2,k)+1]
+                );
+            }catch (Exception e){
+                return 0;
+            }
         }
     }
     private static int answerBlockQuery(int i, int j){
